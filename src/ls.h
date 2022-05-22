@@ -7,20 +7,19 @@ class LightShow{
 public:
    void begin();
    void run();
-   void push(unsigned long pin, unsigned long length, bool& condition);
+   void push(unsigned long pin, unsigned long length, int& value);
    
 private:
    struct Light{
-      Light(unsigned long pin, unsigned long length, bool& condition) : pinNum{pin}, lightLength{length}, lightState{condition}{}
+      Light(unsigned long pin, unsigned long length, int& value) : pinNum{pin}, lightLength{length}, lightValue{value}{}
       
-      bool& lightState;
+      int& lightValue;
       unsigned long lightLength, timeStart{}, timeElapsed{};
       unsigned long pinNum;
       Light* next{nullptr};
    };
    
-   bool state;
-   unsigned long delay, size{};
+   unsigned long size{};
    Light* head{nullptr}, *tail{nullptr}, *curr{nullptr};
 };
 
