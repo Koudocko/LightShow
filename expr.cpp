@@ -44,6 +44,13 @@ Expr* Expr::divF(Expr* opA, Expr* opB){
     return newExpr;
 }
 
+Expr* Expr::modF(Expr* opA, Expr* opB){
+    Expr* newExpr = new Expr(opA->dataRef%opB->dataTemp);
+    newExpr->operandA = opA, newExpr->operandB = opB;
+    newExpr->exprState = State::modE;
+    return newExpr;
+}
+
 Expr* Expr::andF(Expr* opA, Expr* opB){
     Expr* newExpr = new Expr(opA->dataRef && opB->dataTemp);
     newExpr->operandA = opA, newExpr->operandB = opB;
@@ -83,6 +90,9 @@ void Expr::refresh(){
                 break;
             case State::divE: 
                 dataRef = operandA->dataRef/operandB->dataRef;
+                break;
+            case State::modE: 
+                dataRef = operandA->dataRef%operandB->dataRef;
                 break;
             case State::andE: 
                 dataRef = operandA->dataRef && operandB->dataRef;

@@ -21,9 +21,9 @@ void LightShow::refresh(){
     }
     
     if (curr->writeMode)
-        analogWrite(curr->pinNum, curr->valExpr->dataRef);
+        analogWrite(curr->pinNum, curr->valExpr->getData());
     else
-        digitalWrite(curr->pinNum, curr->valExpr->dataRef);
+        digitalWrite(curr->pinNum, curr->valExpr->getData());
 }
 
 void LightShow::push(unsigned long pin, unsigned long length, Expr* expr, int mode){
