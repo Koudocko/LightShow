@@ -8,8 +8,10 @@ public:
     ~Expr();
     Expr(int& valE);
     Expr(int&& valE);
+
     static Expr* makeExpr(int& valE);
     static Expr* makeExpr(int&& valE);
+
     int getData();
     void refresh();
 

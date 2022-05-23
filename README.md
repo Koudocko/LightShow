@@ -10,7 +10,7 @@ States can be as complex as using numerous operations while relying on a changin
 
 
 ## Usage
-To get started, create a new LightShow object with no constructor params. 
+To get started, create a new LightShow object with no constructor params to loop infinitely or pass an integer for the number of cycles. 
 
 Next, use the push(pin, length, expr, mode) to add a new instruction to be executed. 
 
@@ -22,9 +22,9 @@ The expression is an expression object (more on that later), essentially the dec
 
 The mode tells the program whether you want to run analog or digital mode, ANALOG and DIGITAL macros defined. 
 
-Now in some loop statement or in your arduino loop entry point, call the refresh() method. 
+Now in some loop statement or in your arduino loop entry point, call the refresh() method, as this will update the state of the light. 
 
-This will update the state of the light. 
+However, make sure to call the begin() method right before you begin executing, as this will initialize the first node. 
 
 
 ## Expressions

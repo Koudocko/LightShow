@@ -9,6 +9,9 @@
 
 class LightShow{
 public:
+   LightShow(int iter = -1) : cycles{iter}{}
+   ~LightShow();
+
    void begin();
    void refresh();
    void push(unsigned long pin, unsigned long length, Expr* expr, int mode);
@@ -24,6 +27,8 @@ private:
       Light* next{nullptr};
    };
    
+   bool state{true};
+   int cycles;
    unsigned long size{};
    Light* head{nullptr}, *tail{nullptr}, *curr{nullptr};
 };
