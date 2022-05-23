@@ -3,17 +3,20 @@
 
 #include <Arduino.h>
 
+#define DIGITAL 0
+#define ANALOG 1
+
 class LightShow{
 public:
    void begin();
    void run();
-   void push(unsigned long pin, unsigned long length, int& value);
+   void push(unsigned long pin, unsigned long length, int& value, int mode);
    
 private:
    struct Light{
-      Light(unsigned long pin, unsigned long length, int& value) : pinNum{pin}, lightLength{length}, lightValue{value}{}
+      Light(unsigned long pin, unsigned long length, int& value, int mode) : pinNum{pin}, lightLength{length}, lightValue{value}, writeMode{mode}{}
       
-      int& lightValue;
+      int& lightValue, writeMode;
       unsigned long lightLength, timeStart{}, timeElapsed{};
       unsigned long pinNum;
       Light* next{nullptr};

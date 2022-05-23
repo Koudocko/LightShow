@@ -18,18 +18,21 @@ void LightShow::run(){
         curr->timeElapsed = millis()-curr->timeStart;
     }
     
-    analogWrite(curr->pinNum, curr->lightState);
+    if (curr->writeMode)
+        analogWrite(curr->pinNum, curr->lightState);
+    else
+        digitalWrite(curr->pinNum, curr->lightState);
 }
 
-void LightShow::push(unsigned long pin, unsigned long length, int& value){
+void LightShow::push(unsigned long pin, unsigned long length, int& value, int mode){
     if (!size){
-        head = new Light(pin, length, value);
+        head = new Light(pin, length, value, mode);
         tail = head, curr = head;
         ++size;
         return;
     }
 
-    tail->next = new Light(pin, length, value);
+    tail->next = new Light(pin, length, value, mode);
     tail = tail->next;
     ++size;
 }
