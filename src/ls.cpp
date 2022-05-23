@@ -5,7 +5,9 @@ void LightShow::begin(){
     head->timeElapsed = millis()-curr->timeStart;
 }
 
-void LightShow::run(){
+void LightShow::refresh(){
+    curr->valExpr->refresh();
+    
     curr->timeElapsed = millis()-curr->timeStart;
     
     if (curr->timeElapsed >= curr->lightLength){
@@ -19,20 +21,20 @@ void LightShow::run(){
     }
     
     if (curr->writeMode)
-        analogWrite(curr->pinNum, curr->lightState);
+        analogWrite(curr->pinNum, curr->valExpr->dataRef);
     else
-        digitalWrite(curr->pinNum, curr->lightState);
+        digitalWrite(curr->pinNum, curr->valExpr->dataRef);
 }
 
-void LightShow::push(unsigned long pin, unsigned long length, int& value, int mode){
+void LightShow::push(unsigned long pin, unsigned long length, Expr* expr, int mode){
     if (!size){
-        head = new Light(pin, length, value, mode);
+        head = new Light(pin, length, expr, mode);
         tail = head, curr = head;
         ++size;
         return;
     }
 
-    tail->next = new Light(pin, length, value, mode);
+    tail->next = new Light(pin, length, expr, mode);
     tail = tail->next;
     ++size;
 }

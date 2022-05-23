@@ -2,6 +2,7 @@
 #define LS_H
 
 #include <Arduino.h>
+#include "expr.h"
 
 #define DIGITAL 0
 #define ANALOG 1
@@ -9,14 +10,15 @@
 class LightShow{
 public:
    void begin();
-   void run();
-   void push(unsigned long pin, unsigned long length, int& value, int mode);
+   void refresh();
+   void push(unsigned long pin, unsigned long length, Expr* expr, int mode);
    
 private:
    struct Light{
-      Light(unsigned long pin, unsigned long length, int& value, int mode) : pinNum{pin}, lightLength{length}, lightValue{value}, writeMode{mode}{}
+      Light(unsigned long pin, unsigned long length, Expr* expr, int mode) : pinNum{pin}, lightLength{length}, valExpr{expr}, writeMode{mode}{}
       
-      int& lightValue, writeMode;
+      Expr* valExpr;
+      int writeMode;
       unsigned long lightLength, timeStart{}, timeElapsed{};
       unsigned long pinNum;
       Light* next{nullptr};
