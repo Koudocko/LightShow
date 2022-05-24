@@ -18,6 +18,7 @@ void LightShow::refresh(){
                 curr = head;
             else
                 state = false;
+                
             if (cycles < 0) cycles = -1;
             curr->timeStart = millis();
             curr->timeElapsed = millis()-curr->timeStart;
@@ -30,15 +31,15 @@ void LightShow::refresh(){
     }
 }
 
-void LightShow::push(unsigned long pin, unsigned long length, Expr* expr, int mode){
+void LightShow::push(unsigned long pin, unsigned long length, Expr& expr, int mode){
     if (!size){
-        head = new Light(pin, length, expr, mode);
+        head = new Light(pin, length, &expr, mode);
         tail = head, curr = head;
         ++size;
         return;
     }
 
-    tail->next = new Light(pin, length, expr, mode);
+    tail->next = new Light(pin, length, &expr, mode);
     tail = tail->next;
     ++size;
 }

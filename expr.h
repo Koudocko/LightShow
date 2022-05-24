@@ -9,20 +9,20 @@ public:
     Expr(int& valE);
     Expr(int&& valE);
 
-    static Expr* makeExpr(int& valE);
-    static Expr* makeExpr(int&& valE);
+    static Expr& make(int& valE);
+    static Expr& make(int&& valE);
 
     int getData();
     void refresh();
 
-    static Expr* addF(Expr* opA, Expr* opB);
-    static Expr* subF(Expr* opA, Expr* opB);
-    static Expr* mulF(Expr* opA, Expr* opB);
-    static Expr* divF(Expr* opA, Expr* opB);
-    static Expr* modF(Expr* opA, Expr* opB);
-    static Expr* andF(Expr* opA, Expr* opB);
-    static Expr* orF(Expr* opA, Expr* opB);
-    static Expr* notF(Expr* op);
+    Expr& operator+(Expr& op);
+    Expr& operator-(Expr& op);
+    Expr& operator*(Expr& op);
+    Expr& operator/(Expr& op);
+    Expr& operator%(Expr& op);
+    Expr& operator&&(Expr& op);
+    Expr& operator||(Expr& op);
+    Expr& operator!();
 
 private:
     Expr* operandA{nullptr}, *operandB{nullptr}; 
@@ -30,3 +30,7 @@ private:
 };
 
 #endif
+
+/*
+lights.push(8, 500, Expr::makeExpr(var1) && Expr::makeExpr(var2), DIGITAL);
+*/
