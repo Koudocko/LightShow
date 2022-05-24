@@ -14,7 +14,7 @@ public:
 
    void begin();
    void refresh();
-   void push(unsigned long pin, unsigned long length, Expr* expr, int mode);
+   void push(unsigned long pin, unsigned long length, Expr& expr, int mode);
    
 private:
    struct Light{

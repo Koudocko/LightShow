@@ -8,68 +8,68 @@ Expr::Expr(int&& valE) : dataTemp{valE}, dataRef{dataTemp}{
     exprState = State::valE;
 }
 
-Expr* Expr::makeExpr(int& valE){
-    return new Expr(valE);
+Expr& Expr::make(int& valE){
+    return *new Expr(valE);
 }
 
-Expr* Expr::makeExpr(int&& valE){
-    return new Expr(valE);
+Expr& Expr::make(int&& valE){
+    return *new Expr(valE);
 }
 
-Expr* Expr::addF(Expr* opA, Expr* opB){
-    Expr* newExpr = new Expr(opA->dataRef+opB->dataTemp);
-    newExpr->operandA = opA, newExpr->operandB = opB;
+Expr& Expr::operator+(Expr& op){
+    Expr* newExpr = new Expr(dataRef+op.dataTemp);
+    newExpr->operandA = this, newExpr->operandB = &op;
     newExpr->exprState = State::addE;
-    return newExpr;
+    return *newExpr;
 }
 
-Expr* Expr::subF(Expr* opA, Expr* opB){
-    Expr* newExpr = new Expr(opA->dataRef-opB->dataTemp);
-    newExpr->operandA = opA, newExpr->operandB = opB;
+Expr& Expr::operator-(Expr& op){
+    Expr* newExpr = new Expr(dataRef-op.dataTemp);
+    newExpr->operandA = this, newExpr->operandB = &op;
     newExpr->exprState = State::subE;
-    return newExpr;
+    return *newExpr;
 }
 
-Expr* Expr::mulF(Expr* opA, Expr* opB){
-    Expr* newExpr = new Expr(opA->dataRef*opB->dataTemp);
-    newExpr->operandA = opA, newExpr->operandB = opB;
+Expr& Expr::operator*(Expr& op){
+    Expr* newExpr = new Expr(dataRef*op.dataTemp);
+    newExpr->operandA = this, newExpr->operandB = &op;
     newExpr->exprState = State::mulE;
-    return newExpr;
+    return *newExpr;
 }
 
-Expr* Expr::divF(Expr* opA, Expr* opB){
-    Expr* newExpr = new Expr(opA->dataRef/opB->dataTemp);
-    newExpr->operandA = opA, newExpr->operandB = opB;
+Expr& Expr::operator/(Expr& op){
+    Expr* newExpr = new Expr(dataRef/op.dataTemp);
+    newExpr->operandA = this, newExpr->operandB = &op;
     newExpr->exprState = State::divE;
-    return newExpr;
+    return *newExpr;
 }
 
-Expr* Expr::modF(Expr* opA, Expr* opB){
-    Expr* newExpr = new Expr(opA->dataRef%opB->dataTemp);
-    newExpr->operandA = opA, newExpr->operandB = opB;
+Expr& Expr::operator%(Expr& op){
+    Expr* newExpr = new Expr(dataRef%op.dataTemp);
+    newExpr->operandA = this, newExpr->operandB = &op;
     newExpr->exprState = State::modE;
-    return newExpr;
+    return *newExpr;
 }
 
-Expr* Expr::andF(Expr* opA, Expr* opB){
-    Expr* newExpr = new Expr(opA->dataRef && opB->dataTemp);
-    newExpr->operandA = opA, newExpr->operandB = opB;
+Expr& Expr::operator&&(Expr& op){
+    Expr* newExpr = new Expr(dataRef && op.dataTemp);
+    newExpr->operandA = this, newExpr->operandB = &op;
     newExpr->exprState = State::andE;
-    return newExpr;
+    return *newExpr;
 }
 
-Expr* Expr::orF(Expr* opA, Expr* opB){
-    Expr* newExpr = new Expr(opA->dataRef || opB->dataTemp);
-    newExpr->operandA = opA, newExpr->operandB = opB;
+Expr& Expr::operator||(Expr& op){
+    Expr* newExpr = new Expr(dataRef || op.dataTemp);
+    newExpr->operandA = this, newExpr->operandB = &op;
     newExpr->exprState = State::orE;
-    return newExpr;
+    return *newExpr;
 }
 
-Expr* Expr::notF(Expr* op){
-    Expr* newExpr = new Expr(!op->dataRef);
-    newExpr->operandA = op;
+Expr& Expr::operator!(){
+    Expr* newExpr = new Expr(!dataRef);
+    newExpr->operandA = this;
     newExpr->exprState = State::notE;
-    return newExpr;
+    return *newExpr;
 }
 
 void Expr::refresh(){
