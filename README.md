@@ -34,24 +34,9 @@ A complex state is any expression involving a state which returns a prvalue, e.g
 
 Expressions are passed to the push() method of LightShow, thus you must know how to create an expression. 
 
-There are several static methods from the Expr which you must use to create a complex expression: 
+To create an expression, call the make() static method and pass any integer (any value category); 
 
-
-addF(ExprA, ExprB); 
-
-subF(ExprA, ExprB); 
-
-mulF(ExprA, ExprB); 
-
-divF(ExprA, ExprB); 
-
-modF(ExprA, ExprB);
-
-andF(ExprA, ExprB); 
-
-orF(ExprA, ExprB); 
-
-notF(ExprA); 
+Expression objects support several operators: +, -, *, /, %, &&, ||, !. 
 
 
 ### Creating a basic expression from literal(A) or variable(B) 
@@ -60,7 +45,7 @@ A)
 
 LightShow ls; 
 
-ls.push(8, 1000, Expr::makeExpr(true), DIGITAL); 
+ls.push(8, 1000, Expr::make(true), DIGITAL); 
 
 
 B) 
@@ -69,14 +54,14 @@ int state = 1;
 
 LightShow ls; 
 
-ls.push(8, 1000, Expr::makeExpr(state), Digital); 
+ls.push(8, 1000, Expr::make(state), Digital); 
 
 
 ### Creating a complex expression using an operation 
 
 LightShow ls; 
 
-ls.push(8, 1000, Expr::notF(Expr::makeExpr(true))); 
+ls.push(8, 1000, !Expr::make(true)); 
 
 
 ## Example
@@ -84,6 +69,6 @@ int states[2]{};
 
 LightShow ls; 
 
-ls.push(7, 1000, Expr::andF(Expr::makeExpr(states[0]), Expr::makeExpr(states[1])), DIGITAL); 
+ls.push(7, 1000, Expr::make(states[0]) && Expr::make(states[1]), DIGITAL); 
 
 // The LED at pin 7 will turn on for 1000ms at max brightness, if both states[0] and states[1] are not equal to 0 

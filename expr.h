@@ -30,7 +30,3 @@ private:
 };
 
 #endif
-
-/*
-lights.push(8, 500, Expr::makeExpr(var1) && Expr::makeExpr(var2), DIGITAL);
-*/
