@@ -1,11 +1,19 @@
 #include "ls.h"
 
-void LightShow::begin(){
-    head->timeStart = millis();
-    head->timeElapsed = millis()-curr->timeStart;
+void LightShow::reset(){
+    cycles = copyCycles;
+    state = true;
+    begin = false;
+    curr = head; 
 }
 
 void LightShow::refresh(){
+    if (!begin){
+    	head->timeStart = millis();
+   	 	head->timeElapsed = millis()-curr->timeStart;
+        begin = true;
+  	}
+
     if (state){
         curr->valExpr->refresh();
         

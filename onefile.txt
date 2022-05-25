@@ -1,4 +1,34 @@
-#include "expr.h"
+#define DIGITAL 0
+#define ANALOG 1
+
+class Expr{
+public:
+    enum State { addE, subE, mulE, divE, modE, andE, orE, notE, valE };
+
+    ~Expr();
+    Expr(int& valE);
+    Expr(const int& valE);
+    Expr(const Expr& copyExpr) = delete;
+
+    static Expr& make(int& valE);
+    static Expr& make(const int& valE);
+
+    int getData();
+    void refresh();
+
+    Expr& operator+(Expr& op);
+    Expr& operator-(Expr& op);
+    Expr& operator*(Expr& op);
+    Expr& operator/(Expr& op);
+    Expr& operator%(Expr& op);
+    Expr& operator&&(Expr& op);
+    Expr& operator||(Expr& op);
+    Expr& operator!();
+
+private:
+    Expr* operandA{nullptr}, *operandB{nullptr}; 
+    int& dataRef, dataTemp, exprState;
+};
 
 Expr::Expr(int& valE) : dataRef{valE}{
     exprState = State::valE;
@@ -116,4 +146,89 @@ Expr::~Expr(){
 
 int Expr::getData(){
     return dataRef;
+}
+
+class LightShow{
+public:
+   LightShow(int iter = -1) : cycles{iter}, copyCycles{iter}{}
+   ~LightShow();
+
+   void reset();
+   void refresh();
+   void push(unsigned long pin, unsigned long length, Expr& expr, int mode);
+   
+private:
+   struct Light{
+      Light(unsigned long pin, unsigned long length, Expr* expr, int mode) : pinNum{pin}, lightLength{length}, valExpr{expr}, writeMode{mode}{}
+      
+      Expr* valExpr;
+      int writeMode;
+      unsigned long lightLength, timeStart{}, timeElapsed{};
+      unsigned long pinNum;
+      Light* next{nullptr};
+   };
+   
+   bool state{true}, begin{};
+   int cycles, copyCycles;
+   unsigned long size{};
+   Light* head{nullptr}, *tail{nullptr}, *curr{nullptr};
+};
+
+void LightShow::reset(){
+    cycles = copyCycles;
+    state = true;
+    begin = false;
+    curr = head; 
+}
+
+void LightShow::refresh(){
+    if (!begin){
+    	head->timeStart = millis();
+   	 	head->timeElapsed = millis()-curr->timeStart;
+        begin = true;
+  	}
+
+    if (state){
+        curr->valExpr->refresh();
+        
+        curr->timeElapsed = millis()-curr->timeStart;
+        
+        if (curr->timeElapsed >= curr->lightLength){
+            if (curr->next)
+                curr = curr->next;  
+            else if (--cycles)
+                curr = head;
+            else
+                state = false;
+                
+            if (cycles < 0) cycles = -1;
+            curr->timeStart = millis();
+            curr->timeElapsed = millis()-curr->timeStart;
+        }
+        
+        if (curr->writeMode)
+            analogWrite(curr->pinNum, curr->valExpr->getData());
+        else
+            digitalWrite(curr->pinNum, curr->valExpr->getData());
+    }
+}
+
+void LightShow::push(unsigned long pin, unsigned long length, Expr& expr, int mode){
+    if (!size){
+        head = new Light(pin, length, &expr, mode);
+        tail = head, curr = head;
+        ++size;
+        return;
+    }
+
+    tail->next = new Light(pin, length, &expr, mode);
+    tail = tail->next;
+    ++size;
+}
+
+LightShow::~LightShow(){
+    while(head){
+        delete head->valExpr;
+        head = head->next;
+    }
 }

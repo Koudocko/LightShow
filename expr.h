@@ -7,10 +7,11 @@ public:
 
     ~Expr();
     Expr(int& valE);
-    Expr(int&& valE);
+    Expr(const int& valE);
+    Expr(const Expr& copyExpr) = delete;
 
     static Expr& make(int& valE);
-    static Expr& make(int&& valE);
+    static Expr& make(const int& valE);
 
     int getData();
     void refresh();
