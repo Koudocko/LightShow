@@ -11,9 +11,12 @@ class LightShow{
 public:
    LightShow(int iter = -1) : cycles{iter}, copyCycles{iter}{}
    ~LightShow();
-
+	
+   void refreshAll();
+   void onSwitch(void (*func)());
+   bool active();
    void reset();
-   void refresh();
+   void refreshLight();
    void push(unsigned long pin, unsigned long length, Expr& expr, int mode);
    
 private:
@@ -30,7 +33,8 @@ private:
    bool state{true}, begin{};
    int cycles, copyCycles;
    unsigned long size{};
-   Light* head{nullptr}, *tail{nullptr}, *curr{nullptr};
+   Light* head{}, *tail{}, *curr{};
+   void (*callback)(){};
 };
 
 #endif

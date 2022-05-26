@@ -152,9 +152,12 @@ class LightShow{
 public:
    LightShow(int iter = -1) : cycles{iter}, copyCycles{iter}{}
    ~LightShow();
-
+	
+   void refreshAll();
+   void onSwitch(void (*func)());
+   bool active();
    void reset();
-   void refresh();
+   void refreshLight();
    void push(unsigned long pin, unsigned long length, Expr& expr, int mode);
    
 private:
@@ -171,8 +174,28 @@ private:
    bool state{true}, begin{};
    int cycles, copyCycles;
    unsigned long size{};
-   Light* head{nullptr}, *tail{nullptr}, *curr{nullptr};
+   Light* head{}, *tail{}, *curr{};
+   void (*callback)(){};
 };
+
+void LightShow::onSwitch(void (*func)()){
+    callback = func;
+}
+
+void LightShow::refreshAll(){
+    Light* temp = head;
+  
+  	while (temp){
+    	temp->valExpr->refresh();
+      
+      	if (curr->writeMode)
+        	analogWrite(temp->pinNum, temp->valExpr->getData());
+      	else
+        	digitalWrite(temp->pinNum, temp->valExpr->getData());
+        
+        temp = temp->next;
+  	}
+}
 
 void LightShow::reset(){
     cycles = copyCycles;
@@ -181,7 +204,11 @@ void LightShow::reset(){
     curr = head; 
 }
 
-void LightShow::refresh(){
+bool LightShow::active(){
+    return state;
+}
+
+void LightShow::refreshLight(){
     if (!begin){
     	head->timeStart = millis();
    	 	head->timeElapsed = millis()-curr->timeStart;
@@ -190,10 +217,17 @@ void LightShow::refresh(){
 
     if (state){
         curr->valExpr->refresh();
-        
         curr->timeElapsed = millis()-curr->timeStart;
         
         if (curr->timeElapsed >= curr->lightLength){
+            if (callback) callback();
+            curr->valExpr->refresh();
+          
+            if (curr->writeMode)
+            	analogWrite(curr->pinNum, curr->valExpr->getData());
+        	else
+            	digitalWrite(curr->pinNum, curr->valExpr->getData());
+          	
             if (curr->next)
                 curr = curr->next;  
             else if (--cycles)
@@ -202,6 +236,8 @@ void LightShow::refresh(){
                 state = false;
                 
             if (cycles < 0) cycles = -1;
+			
+            curr->valExpr->refresh();
             curr->timeStart = millis();
             curr->timeElapsed = millis()-curr->timeStart;
         }

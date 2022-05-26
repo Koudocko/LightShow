@@ -1,5 +1,24 @@
 #include "ls.h"
 
+void LightShow::onSwitch(void (*func)()){
+    callback = func;
+}
+
+void LightShow::refreshAll(){
+    Light* temp = head;
+  
+  	while (temp){
+    	temp->valExpr->refresh();
+      
+      	if (curr->writeMode)
+        	analogWrite(temp->pinNum, temp->valExpr->getData());
+      	else
+        	digitalWrite(temp->pinNum, temp->valExpr->getData());
+        
+        temp = temp->next;
+  	}
+}
+
 void LightShow::reset(){
     cycles = copyCycles;
     state = true;
@@ -7,7 +26,11 @@ void LightShow::reset(){
     curr = head; 
 }
 
-void LightShow::refresh(){
+bool LightShow::active(){
+    return state;
+}
+
+void LightShow::refreshLight(){
     if (!begin){
     	head->timeStart = millis();
    	 	head->timeElapsed = millis()-curr->timeStart;
@@ -16,10 +39,17 @@ void LightShow::refresh(){
 
     if (state){
         curr->valExpr->refresh();
-        
         curr->timeElapsed = millis()-curr->timeStart;
         
         if (curr->timeElapsed >= curr->lightLength){
+            if (callback) callback();
+            curr->valExpr->refresh();
+          
+            if (curr->writeMode)
+            	analogWrite(curr->pinNum, curr->valExpr->getData());
+        	else
+            	digitalWrite(curr->pinNum, curr->valExpr->getData());
+          	
             if (curr->next)
                 curr = curr->next;  
             else if (--cycles)
@@ -28,6 +58,8 @@ void LightShow::refresh(){
                 state = false;
                 
             if (cycles < 0) cycles = -1;
+			
+            curr->valExpr->refresh();
             curr->timeStart = millis();
             curr->timeElapsed = millis()-curr->timeStart;
         }
