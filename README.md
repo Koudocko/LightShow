@@ -18,16 +18,26 @@ To get started, create a new LightShow object with no constructor params to loop
 
 
 ## **Methods**
+### **Expr Class**
+- static Expr& make(int& valE) : creates a new expression object from an lvalue
+- static Expr& make(const int& valE) : creates a new expression object from an rvalue
+- int getData() : retrieve the data stored in an expression object
+- operators +, -, *, /, %, &&, ||, !
 
+### **LightShow class**
+- void refreshAll() : immediately refreshes all the lights stored in the LightShow object
+- void onSwitch(void (*func)()) : set the functionality of the event when a new light instruction is swapped to in the LightShow object
+- bool active() : returns whether the LightShow object has finished executing (only valid if finite number of iterations is set)
+- void reset() : resets the LightShow object to its original state (also resumes executing if previously finished)
+- void refreshLight() : refreshes the state of the current light executing in the LightShow object
+- void push(unsigned long pin, unsigned long length, Expr& expr, int mode) : add a new light/instruction to the LightShow object
 
 
 ### **Creating a basic expression from literal(A) or variable(B)**
-
 #### **A)**
 
     LightShow ls; 
     ls.push(8, 1000, Expr::make(true), DIGITAL); 
-
 
 #### **B)** 
 
@@ -35,12 +45,10 @@ To get started, create a new LightShow object with no constructor params to loop
     LightShow ls; 
     ls.push(8, 1000, Expr::make(state), DIGITAL); 
 
-
 ### **Creating a complex expression using an operation** 
 
     LightShow ls; 
     ls.push(8, 1000, !Expr::make(true), DIGITAL); 
-
 
 ## **Example**
     int state{1}; 
